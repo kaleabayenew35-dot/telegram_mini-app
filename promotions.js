@@ -15,7 +15,6 @@ export const renderPromotions = (track, controls, promotions, onNotice) => {
     <article class="promotion-slide ${index === 0 ? 'active' : ''}" data-slide="${index}">
       ${promotion.image_data ? `<img class="promotion-image" src="${promotion.image_data}" alt="">` : '<div class="promotion-mark" aria-hidden="true">+</div>'}
       <div class="promotion-copy">
-        <span class="hero-kicker">${promotion.fallback ? 'READY WHEN YOU ARE' : 'FEATURED PROMOTION'}</span>
         <h2>${escapeHtml(promotion.title)}</h2>
         ${promotion.fallback ? '<p>Jump into a game, find a room, and keep your rewards in one place.</p>' : ''}
         <button class="promotion-button" type="button" data-promotion-url="${escapeHtml(promotion.button_url || '')}">${escapeHtml(promotion.button_text)}</button>
