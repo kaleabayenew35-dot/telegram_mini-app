@@ -44,8 +44,11 @@
       </section>
 
       <nav class="view-tabs" aria-label="App sections">
-        <button class="view-tab active" data-view="games" type="button">Games</button>
-        <button class="view-tab" data-view="wallet" type="button">Wallet</button>
+        <button class="view-tab active" data-view="games" type="button"><span aria-hidden="true">&#127918;</span> Games</button>
+        <button class="view-tab" data-view="wallet" type="button"><span aria-hidden="true">&#128176;</span> Wallet</button>
+        <button class="view-tab" data-view="help" type="button"><span aria-hidden="true">&#10067;</span> Help</button>
+        <button class="view-tab" data-view="profile" type="button"><span aria-hidden="true">&#128100;</span> Profile</button>
+        <button class="view-tab" data-view="invite" type="button"><span aria-hidden="true">&#128279;</span> Invite</button>
       </nav>
 
       <section class="view active" id="gamesView">
@@ -77,6 +80,54 @@
         <div class="account-card">
           <div><span>Username</span><strong id="walletUsername">--</strong></div>
           <div><span>Telegram ID</span><strong id="telegramId">--</strong></div>
+        </div>
+      </section>
+
+      <section class="view" id="helpView">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">NEED A HAND?</span>
+            <h2>Help center</h2>
+          </div>
+        </div>
+        <div class="info-list">
+          <article class="info-item"><strong>How do I play?</strong><p>Choose a game, tap Play, and follow the game lobby instructions.</p></article>
+          <article class="info-item"><strong>How does my balance work?</strong><p>Your balance is managed securely by the games backend and updates after supported game actions.</p></article>
+          <article class="info-item"><strong>Need support?</strong><p>Return to the Telegram bot and send /help for account and support options.</p></article>
+        </div>
+      </section>
+
+      <section class="view" id="profileView">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">YOUR IDENTITY</span>
+            <h2>Profile</h2>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-avatar" id="profileAvatar">?</div>
+          <h3 id="profileUsername">--</h3>
+          <span id="profileTelegramId">Telegram account</span>
+        </div>
+        <div class="account-card profile-details">
+          <div><span>Username</span><strong id="profileUsernameDetail">--</strong></div>
+          <div><span>Telegram ID</span><strong id="profileTelegramDetail">--</strong></div>
+        </div>
+      </section>
+
+      <section class="view" id="inviteView">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">GROW THE TABLE</span>
+            <h2>Invite friends</h2>
+          </div>
+        </div>
+        <div class="invite-card">
+          <div class="invite-symbol" aria-hidden="true">&#43;</div>
+          <h3>Bring your people into the game.</h3>
+          <p>Share the Telegram Games Mini App and start a match together.</p>
+          <button class="primary-button" id="inviteButton" type="button">Share invite link</button>
+          <small id="inviteLinkLabel">https://telegram-mini-app-n9ee.onrender.com</small>
         </div>
       </section>
     </main>

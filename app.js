@@ -9,6 +9,7 @@ const elements = {
   gamesNotice: document.getElementById('gamesNotice'),
   refresh: document.getElementById('refreshButton'),
   toast: document.getElementById('toast'),
+  invite: document.getElementById('inviteButton'),
 };
 
 const showNotice = (message) => {
@@ -25,6 +26,23 @@ const toast = (message) => {
 const setView = (view) => {
   document.querySelectorAll('.view-tab').forEach((tab) => tab.classList.toggle('active', tab.dataset.view === view));
   document.querySelectorAll('.view').forEach((section) => section.classList.toggle('active', section.id === `${view}View`));
+};
+
+const renderProfile = ({ user, telegramId }) => {
+  const username = user?.username || 'Player';
+  const id = telegramId || '--';
+  document.getElementById('profileAvatar').textContent = username[0].toUpperCase();
+  document.getElementById('profileUsername').textContent = username;
+  document.getElementById('profileTelegramId').textContent = `Telegram ID ${id}`;
+  document.getElementById('profileUsernameDetail').textContent = username;
+  document.getElementById('profileTelegramDetail').textContent = id;
+};
+
+const shareInvite = () => {
+  const appUrl = 'https://telegram-mini-app-n9ee.onrender.com';
+  const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(appUrl)}&text=${encodeURIComponent('Join me on Telegram Games!')}`;
+  if (window.Telegram?.WebApp?.openTelegramLink) window.Telegram.WebApp.openTelegramLink(shareUrl);
+  else window.open(shareUrl, '_blank', 'noopener,noreferrer');
 };
 
 const loadApp = async () => {
@@ -48,6 +66,7 @@ const loadApp = async () => {
     renderGames(elements.gamesGrid, games, auth, toast);
     elements.gamesCount.textContent = `${games.length} active`;
     renderWallet({ user, balance: balanceResult.balance, telegramId: telegramUser?.id || session.telegramId });
+    renderProfile({ user, telegramId: telegramUser?.id || session.telegramId });
   } catch (error) {
     elements.gamesGrid.innerHTML = '<div class="empty-state">We could not load the games.</div>';
     showNotice(error.message || 'Please try again.');
@@ -57,5 +76,6 @@ const loadApp = async () => {
 
 document.querySelectorAll('.view-tab').forEach((tab) => tab.addEventListener('click', () => setView(tab.dataset.view)));
 elements.refresh.addEventListener('click', () => loadApp());
+elements.invite.addEventListener('click', shareInvite);
 initializeTelegram();
 loadApp();

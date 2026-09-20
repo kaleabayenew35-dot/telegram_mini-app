@@ -33,7 +33,7 @@ h2 { font-size: 24px; }
 .hero-kicker { color: #f2b39f; }
 .hero-mark { position: absolute; right: 22px; bottom: -30px; color: var(--accent); font-family: 'Space Grotesk'; font-size: 180px; line-height: 1; opacity: .9; }
 .view-tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--line); }
-.view-tab { padding: 12px 4px; margin-right: 18px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); font-weight: 700; cursor: pointer; }
+.view-tab { display: inline-flex; align-items: center; gap: 6px; padding: 12px 4px; margin-right: 18px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .view-tab.active { border-color: var(--accent); color: var(--ink); }
 .section-heading { margin-bottom: 14px; }
 .count-label { color: var(--muted); font-size: 12px; }
@@ -53,6 +53,21 @@ h2 { font-size: 24px; }
 .account-card > div { padding: 14px 0; border-bottom: 1px solid var(--line); }
 .account-card > div:last-child { border-bottom: 0; }
 .account-card strong { font-size: 14px; }
+.info-list { display: grid; gap: 12px; }
+.info-item { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+.info-item strong { font-family: 'Space Grotesk'; }
+.info-item p { margin-top: 7px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.profile-card { display: grid; justify-items: center; gap: 7px; padding: 26px 18px; border-radius: 16px; background: var(--ink); color: #fff; box-shadow: var(--shadow); }
+.profile-card-avatar { display: grid; width: 64px; height: 64px; place-items: center; margin-bottom: 4px; border-radius: 18px; background: var(--mint); color: var(--ink); font-family: 'Space Grotesk'; font-size: 30px; font-weight: 700; }
+.profile-card h3 { font-family: 'Space Grotesk'; font-size: 22px; }
+.profile-card span { color: #b9c2c5; font-size: 12px; }
+.profile-details { margin-top: 14px; }
+.invite-card { display: grid; justify-items: center; gap: 12px; padding: 30px 20px; border-radius: 16px; background: var(--mint); text-align: center; }
+.invite-symbol { display: grid; width: 56px; height: 56px; place-items: center; border-radius: 50%; background: var(--ink); color: var(--mint); font-size: 34px; }
+.invite-card h3 { max-width: 280px; font-family: 'Space Grotesk'; font-size: 21px; }
+.invite-card p { max-width: 340px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.primary-button { padding: 12px 18px; border: 0; border-radius: 9px; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer; }
+.invite-card small { max-width: 100%; overflow: hidden; color: var(--accent-dark); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .notice { margin-bottom: 14px; padding: 12px 14px; border-radius: 10px; background: #ffe2d9; color: #8c301e; font-size: 13px; }
 .loading-state, .empty-state { padding: 30px 14px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); text-align: center; }
 .bottom-note { margin-top: 30px; color: var(--muted); font-size: 11px; text-align: center; }
@@ -61,4 +76,4 @@ h2 { font-size: 24px; }
 .hidden { display: none; }
 .toast { position: fixed; right: 20px; bottom: 24px; left: 20px; z-index: 2; max-width: 520px; margin: auto; padding: 13px 16px; transform: translateY(20px); border-radius: 10px; background: var(--ink); color: #fff; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
 .toast.visible { transform: translateY(0); opacity: 1; }
-@media (max-width: 520px) { .app-shell { padding: 22px 14px 28px; } .hero-panel { min-height: 180px; padding: 20px; } .game-card p { max-width: 145px; } .play-button { padding: 8px 11px; } }
+@media (max-width: 620px) { .app-shell { padding: 22px 14px 28px; } .view-tabs { overflow-x: auto; scrollbar-width: none; } .view-tabs::-webkit-scrollbar { display: none; } .view-tab { margin-right: 12px; } .hero-panel { min-height: 180px; padding: 20px; } .game-card p { max-width: 145px; } .play-button { padding: 8px 11px; } }
