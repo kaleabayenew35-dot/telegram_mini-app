@@ -22,6 +22,8 @@ h1, h2 { font-family: 'Space Grotesk', sans-serif; letter-spacing: -.035em; }
 h1 { font-size: clamp(27px, 7vw, 42px); line-height: 1; }
 h2 { font-size: 24px; }
 .icon-button { width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; background: var(--card); color: var(--ink); font-size: 24px; cursor: pointer; }
+.icon-button.is-refreshing { animation: refresh-spin .8s linear infinite; }
+.icon-button:disabled { opacity: .55; cursor: wait; }
 .profile-strip, .hero-panel, .wallet-card, .account-card { border: 1px solid var(--line); background: var(--card); box-shadow: var(--shadow); }
 .profile-strip { gap: 12px; padding: 14px; border-radius: 14px; }
 .avatar { display: grid; width: 44px; height: 44px; place-items: center; border-radius: 12px; background: var(--ink); color: #fff; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px; }
@@ -49,6 +51,35 @@ h2 { font-size: 24px; }
 .wallet-card { display: grid; gap: 8px; padding: 24px; border-radius: 16px; background: var(--ink); color: #fff; }
 .wallet-card strong { font-family: 'Space Grotesk'; font-size: 38px; }
 .wallet-card small { color: #b9c2c5; }
+.wallet-actions { display: grid; gap: 12px; margin-top: 14px; }
+.money-action { display: grid; gap: 13px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+.money-action > div:first-child { display: grid; gap: 4px; }
+.money-action span { font-family: 'Space Grotesk'; font-weight: 700; }
+.money-action small { color: var(--muted); font-size: 12px; }
+.money-form { display: flex; gap: 8px; }
+.money-form input, .money-form select { min-width: 0; flex: 1; padding: 10px 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); color: var(--ink); }
+.money-form input:focus { outline: 2px solid rgba(232, 93, 63, .25); border-color: var(--accent); }
+.secondary-button, .text-button { border: 0; cursor: pointer; font-weight: 700; }
+.secondary-button { padding: 10px 13px; border-radius: 9px; background: var(--ink); color: #fff; }
+.money-form button:disabled { opacity: .55; cursor: wait; }
+.history-heading { display: flex; align-items: end; justify-content: space-between; margin: 26px 0 12px; }
+.history-heading h3 { font-family: 'Space Grotesk'; font-size: 18px; }
+.text-button { padding: 4px 0; background: transparent; color: var(--accent-dark); font-size: 12px; }
+.transaction-list { display: grid; gap: 9px; }
+.transaction-row { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+.transaction-symbol { display: grid; flex: 0 0 32px; height: 32px; place-items: center; border-radius: 10px; background: #ffe2d9; color: var(--accent-dark); font-size: 20px; font-weight: 700; }
+.transaction-symbol.withdraw { background: #e6e9ed; color: var(--ink); }
+.transaction-copy { display: grid; min-width: 0; flex: 1; gap: 2px; }
+.transaction-copy strong { font-size: 13px; }
+.transaction-copy span, .transaction-copy small { overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.transaction-amount { display: grid; justify-items: end; gap: 4px; text-align: right; }
+.transaction-amount strong { font-size: 12px; white-space: nowrap; }
+.deposit-text { color: #24724b; }
+.status { padding: 3px 6px; border-radius: 5px; font-size: 9px; font-weight: 700; }
+.status-done { background: #d7efdf; color: #24724b; }
+.status-pending { background: #fff0c9; color: #856317; }
+.status-rejected { background: #ffe2d9; color: #8c301e; }
+.empty-history { padding: 20px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); text-align: center; font-size: 13px; }
 .account-card { display: grid; gap: 0; margin-top: 14px; padding: 4px 16px; border-radius: 14px; }
 .account-card > div { padding: 14px 0; border-bottom: 1px solid var(--line); }
 .account-card > div:last-child { border-bottom: 0; }
@@ -76,4 +107,5 @@ h2 { font-size: 24px; }
 .hidden { display: none; }
 .toast { position: fixed; right: 20px; bottom: 24px; left: 20px; z-index: 2; max-width: 520px; margin: auto; padding: 13px 16px; transform: translateY(20px); border-radius: 10px; background: var(--ink); color: #fff; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
 .toast.visible { transform: translateY(0); opacity: 1; }
+@keyframes refresh-spin { to { transform: rotate(360deg); } }
 @media (max-width: 620px) { .app-shell { padding: 22px 14px 28px; } .view-tabs { overflow-x: auto; scrollbar-width: none; } .view-tabs::-webkit-scrollbar { display: none; } .view-tab { margin-right: 12px; } .hero-panel { min-height: 180px; padding: 20px; } .game-card p { max-width: 145px; } .play-button { padding: 8px 11px; } }

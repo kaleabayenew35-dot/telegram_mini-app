@@ -77,6 +77,20 @@
           <strong id="walletBalance">--</strong>
           <small>Use your balance to enter supported games.</small>
         </div>
+        <div class="wallet-actions">
+          <div class="money-action">
+            <div><span>Deposit</span><small>Add funds to your balance</small></div>
+            <div class="money-form"><input id="depositAmount" type="number" min="1" step="0.01" inputmode="decimal" placeholder="Amount"><select id="depositMethod" aria-label="Deposit method"><option value="telebirr">TeleBirr</option><option value="cbe">CBE</option><option value="cbebirr">CBE Birr</option><option value="mpesa">M-PESA</option></select></div>
+            <div class="money-form"><input id="depositReference" type="text" placeholder="Payment reference"><button class="primary-button" id="depositButton" type="button">Request</button></div>
+          </div>
+          <div class="money-action">
+            <div><span>Withdraw</span><small>Withdraw from your available balance</small></div>
+            <div class="money-form"><input id="withdrawAmount" type="number" min="1" step="0.01" inputmode="decimal" placeholder="Amount"><select id="withdrawMethod" aria-label="Withdrawal method"><option value="telebirr">TeleBirr</option><option value="cbe">CBE</option><option value="cbebirr">CBE Birr</option><option value="mpesa">M-PESA</option></select></div>
+            <div class="money-form"><input id="withdrawReference" type="text" placeholder="Account or phone"><button class="secondary-button" id="withdrawButton" type="button">Request</button></div>
+          </div>
+        </div>
+        <div class="history-heading"><div><span class="section-label">ACCOUNT HISTORY</span><h3>Recent transactions</h3></div><button class="text-button" id="historyRefreshButton" type="button">Refresh</button></div>
+        <div class="transaction-list" id="transactionList"><div class="loading-state">Loading account history...</div></div>
         <div class="account-card">
           <div><span>Username</span><strong id="walletUsername">--</strong></div>
           <div><span>Telegram ID</span><strong id="telegramId">--</strong></div>

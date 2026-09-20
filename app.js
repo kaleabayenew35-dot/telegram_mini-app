@@ -1,7 +1,7 @@
 import { ensureAuth, getAuth, getTelegramContext, initializeTelegram } from './auth.js';
-import { API_BASE, fetchBalance, fetchGames, fetchUser } from './api.js';
+import { API_BASE, depositFunds, fetchBalance, fetchGames, fetchTransactions, fetchUser, withdrawFunds } from './api.js';
 import { renderGames } from './games.js';
-import { renderWallet } from './wallet.js';
+import { renderTransactions, renderWallet } from './wallet.js';
 
 const elements = {
   gamesGrid: document.getElementById('gamesGrid'),
@@ -10,6 +10,15 @@ const elements = {
   refresh: document.getElementById('refreshButton'),
   toast: document.getElementById('toast'),
   invite: document.getElementById('inviteButton'),
+  depositAmount: document.getElementById('depositAmount'),
+  depositMethod: document.getElementById('depositMethod'),
+  depositReference: document.getElementById('depositReference'),
+  withdrawAmount: document.getElementById('withdrawAmount'),
+  withdrawMethod: document.getElementById('withdrawMethod'),
+  withdrawReference: document.getElementById('withdrawReference'),
+  depositButton: document.getElementById('depositButton'),
+  withdrawButton: document.getElementById('withdrawButton'),
+  historyRefresh: document.getElementById('historyRefreshButton'),
 };
 
 const showNotice = (message) => {
@@ -45,9 +54,40 @@ const shareInvite = () => {
   else window.open(shareUrl, '_blank', 'noopener,noreferrer');
 };
 
+const setRefreshing = (isRefreshing) => {
+  elements.refresh.classList.toggle('is-refreshing', isRefreshing);
+  elements.refresh.disabled = isRefreshing;
+};
+
+const readAmount = (input) => {
+  const amount = Number(input.value);
+  if (!Number.isFinite(amount) || amount <= 0) throw new Error('Enter a valid amount greater than zero.');
+  return amount;
+};
+
+const runMoneyAction = async (action, input, methodInput, referenceInput, button, successMessage) => {
+  try {
+    const session = getAuth();
+    button.disabled = true;
+    const reference = referenceInput.value.trim();
+    if (!reference) throw new Error('Enter the payment reference or receiving account.');
+    await action(session.userId, { amount: readAmount(input), method: methodInput.value, reference });
+    input.value = '';
+    referenceInput.value = '';
+    toast(successMessage);
+    await loadApp();
+  } catch (error) {
+    toast(error.message || 'The wallet action failed.');
+  } finally {
+    button.disabled = false;
+  }
+};
+
 const loadApp = async () => {
+  setRefreshing(true);
   elements.gamesNotice.classList.add('hidden');
   elements.gamesGrid.innerHTML = '<div class="loading-state">Loading games...</div>';
+  document.getElementById('transactionList').innerHTML = '<div class="loading-state">Loading account history...</div>';
   try {
     const auth = await ensureAuth(API_BASE);
     const session = getAuth();
@@ -56,10 +96,11 @@ const loadApp = async () => {
 
     if (!userId) throw new Error('Your account session is incomplete. Please reopen the Mini App from Telegram.');
 
-    const [gamesResult, userResult, balanceResult] = await Promise.all([
+    const [gamesResult, userResult, balanceResult, transactionsResult] = await Promise.all([
       fetchGames(),
       fetchUser(userId),
       fetchBalance(userId),
+      fetchTransactions(userId),
     ]);
     const games = Array.isArray(gamesResult.games) ? gamesResult.games : [];
     const user = userResult.user || {};
@@ -67,15 +108,21 @@ const loadApp = async () => {
     elements.gamesCount.textContent = `${games.length} active`;
     renderWallet({ user, balance: balanceResult.balance, telegramId: telegramUser?.id || session.telegramId });
     renderProfile({ user, telegramId: telegramUser?.id || session.telegramId });
+    renderTransactions(transactionsResult.transactions || []);
   } catch (error) {
     elements.gamesGrid.innerHTML = '<div class="empty-state">We could not load the games.</div>';
     showNotice(error.message || 'Please try again.');
     document.getElementById('playerStatus').textContent = 'Connection needs attention';
+  } finally {
+    setRefreshing(false);
   }
 };
 
 document.querySelectorAll('.view-tab').forEach((tab) => tab.addEventListener('click', () => setView(tab.dataset.view)));
 elements.refresh.addEventListener('click', () => loadApp());
 elements.invite.addEventListener('click', shareInvite);
+elements.depositButton.addEventListener('click', () => runMoneyAction(depositFunds, elements.depositAmount, elements.depositMethod, elements.depositReference, elements.depositButton, 'Deposit request submitted for review.'));
+elements.withdrawButton.addEventListener('click', () => runMoneyAction(withdrawFunds, elements.withdrawAmount, elements.withdrawMethod, elements.withdrawReference, elements.withdrawButton, 'Withdrawal request submitted for review.'));
+elements.historyRefresh.addEventListener('click', () => loadApp());
 initializeTelegram();
 loadApp();

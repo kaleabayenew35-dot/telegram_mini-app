@@ -17,3 +17,14 @@ const request = async (path, options = {}) => {
 export const fetchGames = () => request('/api/games');
 export const fetchUser = (userId) => request(`/api/users/${encodeURIComponent(userId)}`);
 export const fetchBalance = (userId) => request(`/api/users/${encodeURIComponent(userId)}/balance`);
+export const fetchTransactions = (userId) => request(`/api/admin/games/users/${encodeURIComponent(userId)}/transactions?limit=20`);
+const makeClientReference = (prefix) => `${prefix}-${Date.now().toString(36).toUpperCase()}`;
+
+export const depositFunds = (userId, { amount, method, reference }) => request(`/api/admin/games/users/${encodeURIComponent(userId)}/request-deposit`, {
+  method: 'POST',
+  body: JSON.stringify({ amount, method, transaction_id: makeClientReference('DEP'), transaction_number: reference }),
+});
+export const withdrawFunds = (userId, { amount, method, reference }) => request(`/api/admin/games/users/${encodeURIComponent(userId)}/request-withdraw`, {
+  method: 'POST',
+  body: JSON.stringify({ amount, method, transaction_id: makeClientReference('WDR'), transaction_number: reference }),
+});
