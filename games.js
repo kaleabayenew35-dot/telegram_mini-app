@@ -1,0 +1,60 @@
+const icons = {
+  dama: 'D', bingo: 'B', ludo: 'L', flappy: 'F', snake: 'S', tetris: 'T',
+};
+
+const getIcon = (name) => icons[String(name || '').toLowerCase()] || 'G';
+
+const cleanUrl = (value) => {
+  if (!value) return null;
+  try {
+    const url = new URL(String(value).trim());
+    if (!['http:', 'https:'].includes(url.protocol)) return null;
+    if (url.hostname === 'example.com' || url.pathname.includes('your_bot_name')) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+};
+
+const launchUrl = (game, auth) => {
+  const url = cleanUrl(game.mini_app_url) || cleanUrl(game.game_url);
+  if (!url) return null;
+  const parsed = new URL(url);
+  if (auth.token) parsed.searchParams.set('token', auth.token);
+  if (auth.launch) parsed.searchParams.set('launch', auth.launch);
+  return parsed.toString();
+};
+
+export const renderGames = (container, games, auth, onNotice) => {
+  container.replaceChildren();
+  if (!games.length) {
+    container.innerHTML = '<div class="empty-state">No active games are available right now.</div>';
+    return;
+  }
+
+  games.forEach((game) => {
+    const card = document.createElement('article');
+    card.className = 'game-card';
+    const url = launchUrl(game, auth);
+    const minimum = Number(game.min_players || 1);
+    const maximum = Number(game.max_players || minimum);
+    card.innerHTML = `
+      <div class="game-icon">${getIcon(game.name)}</div>
+      <div class="game-card-copy">
+        <h3>${escapeHtml(game.name || 'Game')}</h3>
+        <p>${escapeHtml(game.description || 'Ready for a new challenge?')}</p>
+        <span class="player-range">${minimum}-${maximum} players</span>
+      </div>
+      <button class="play-button" type="button" ${url ? '' : 'disabled'}>${url ? 'Play' : 'Soon'}</button>
+    `;
+    card.querySelector('.play-button').addEventListener('click', () => {
+      if (url) window.location.assign(url);
+      else onNotice('This game does not have a launch URL yet.');
+    });
+    container.appendChild(card);
+  });
+};
+
+const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+}[character]));

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101820">
+  <title>Telegram Games</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">TELEGRAM GAMES</p>
+        <h1>Play something good.</h1>
+      </div>
+      <button class="icon-button" id="refreshButton" type="button" aria-label="Refresh">&#8635;</button>
+    </header>
+
+    <main>
+      <section class="profile-strip" aria-label="Player profile">
+        <div class="avatar" id="avatar">?</div>
+        <div class="profile-copy">
+          <strong id="playerName">Loading...</strong>
+          <span id="playerStatus">Connecting securely</span>
+        </div>
+        <div class="balance-chip">
+          <span>Balance</span>
+          <strong id="balanceValue">--</strong>
+        </div>
+      </section>
+
+      <section class="hero-panel">
+        <div>
+          <span class="hero-kicker">READY WHEN YOU ARE</span>
+          <h2>Choose your next match.</h2>
+          <p>Jump into a game, find a room, and keep your rewards in one place.</p>
+        </div>
+        <div class="hero-mark" aria-hidden="true">+</div>
+      </section>
+
+      <nav class="view-tabs" aria-label="App sections">
+        <button class="view-tab active" data-view="games" type="button">Games</button>
+        <button class="view-tab" data-view="wallet" type="button">Wallet</button>
+      </nav>
+
+      <section class="view active" id="gamesView">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">LIBRARY</span>
+            <h2>Available games</h2>
+          </div>
+          <span class="count-label" id="gamesCount">--</span>
+        </div>
+        <div class="notice hidden" id="gamesNotice" role="status"></div>
+        <div class="game-grid" id="gamesGrid" aria-live="polite">
+          <div class="loading-state">Loading games...</div>
+        </div>
+      </section>
+
+      <section class="view" id="walletView">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">YOUR ACCOUNT</span>
+            <h2>Wallet</h2>
+          </div>
+        </div>
+        <div class="wallet-card">
+          <span>Available balance</span>
+          <strong id="walletBalance">--</strong>
+          <small>Use your balance to enter supported games.</small>
+        </div>
+        <div class="account-card">
+          <div><span>Username</span><strong id="walletUsername">--</strong></div>
+          <div><span>Telegram ID</span><strong id="telegramId">--</strong></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bottom-note">Secure game access powered by Telegram</footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

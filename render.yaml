@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: telegram-games-mini-app
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
