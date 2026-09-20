@@ -51,6 +51,10 @@ h2 { font-size: 24px; }
 .view-tab.active { border-color: var(--accent); color: var(--ink); }
 .section-heading { margin-bottom: 14px; }
 .count-label { color: var(--muted); font-size: 12px; }
+.game-filters { display: flex; gap: 8px; margin: -2px 0 14px; overflow-x: auto; scrollbar-width: none; }
+.game-filters::-webkit-scrollbar { display: none; }
+.game-filter { padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.game-filter.active { border-color: var(--accent); background: var(--accent); color: #fff; }
 .game-grid { display: grid; gap: 12px; }
 .game-card { display: flex; align-items: center; gap: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); box-shadow: 0 5px 18px rgba(16, 24, 32, .04); }
 .game-icon { display: grid; flex: 0 0 48px; height: 48px; place-items: center; border-radius: 13px; background: var(--mint); color: var(--ink); font-family: 'Space Grotesk'; font-size: 25px; font-weight: 700; }

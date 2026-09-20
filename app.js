@@ -28,6 +28,11 @@ const elements = {
 
 let transactionPage = 1;
 let promotionTimer = null;
+let availableGames = [];
+let selectedGameFilter = 'all';
+let currentGameUser = null;
+let currentGameBalance = null;
+let currentGameSession = null;
 
 const showNotice = (message) => {
   elements.gamesNotice.textContent = message;
@@ -60,6 +65,18 @@ const shareInvite = () => {
   const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(appUrl)}&text=${encodeURIComponent('Join me on Telegram Games!')}`;
   if (window.Telegram?.WebApp?.openTelegramLink) window.Telegram.WebApp.openTelegramLink(shareUrl);
   else window.open(shareUrl, '_blank', 'noopener,noreferrer');
+};
+
+const gameMatchesFilter = (game, filter) => {
+  if (filter === 'multiplayer') return Number(game.max_players || 1) > 1;
+  if (filter === 'casino') return /bingo|casino|slots|poker|blackjack|roulette/i.test(game.name || '');
+  return true;
+};
+
+const renderFilteredGames = (user, balance, session, toast) => {
+  const filteredGames = availableGames.filter(game => gameMatchesFilter(game, selectedGameFilter));
+  renderGames(elements.gamesGrid, filteredGames, (game, url) => openGame(game, url, user, balance, session), toast);
+  elements.gamesCount.textContent = `${filteredGames.length} shown`;
 };
 
 const openGame = async (game, url, user, balance, session) => {
@@ -123,8 +140,11 @@ const loadApp = async (requestedTransactionPage = transactionPage) => {
     ]);
     const games = Array.isArray(gamesResult.games) ? gamesResult.games : [];
     const user = userResult.user || {};
-    renderGames(elements.gamesGrid, games, (game, url) => openGame(game, url, user, balanceResult.balance, session), toast);
-    elements.gamesCount.textContent = `${games.length} active`;
+    availableGames = games;
+    currentGameUser = user;
+    currentGameBalance = balanceResult.balance;
+    currentGameSession = session;
+    renderFilteredGames(user, balanceResult.balance, session, toast);
     renderWallet({ user, balance: balanceResult.balance, telegramId: telegramUser?.id || session.telegramId });
     renderProfile({ user, telegramId: telegramUser?.id || session.telegramId });
     renderTransactions(transactionsResult.transactions || [], transactionsResult.pagination || { page: transactionPage });
@@ -148,6 +168,11 @@ const loadApp = async (requestedTransactionPage = transactionPage) => {
 };
 
 document.querySelectorAll('.view-tab').forEach((tab) => tab.addEventListener('click', () => setView(tab.dataset.view)));
+document.querySelectorAll('.game-filter').forEach((filterButton) => filterButton.addEventListener('click', () => {
+  selectedGameFilter = filterButton.dataset.filter;
+  document.querySelectorAll('.game-filter').forEach(button => button.classList.toggle('active', button === filterButton));
+  renderFilteredGames(currentGameUser, currentGameBalance, currentGameSession, toast);
+}));
 elements.refresh?.addEventListener('click', () => loadApp());
 elements.invite.addEventListener('click', shareInvite);
 elements.depositButton.addEventListener('click', () => runMoneyAction(depositFunds, elements.depositAmount, elements.depositMethod, elements.depositReference, elements.depositButton, 'Deposit request submitted for review.'));
