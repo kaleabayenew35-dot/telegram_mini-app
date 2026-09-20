@@ -17,7 +17,7 @@ const request = async (path, options = {}) => {
 export const fetchGames = () => request('/api/games');
 export const fetchUser = (userId) => request(`/api/users/${encodeURIComponent(userId)}`);
 export const fetchBalance = (userId) => request(`/api/users/${encodeURIComponent(userId)}/balance`);
-export const fetchTransactions = (userId) => request(`/api/users/${encodeURIComponent(userId)}/transactions?limit=20`);
+export const fetchTransactions = (userId, page = 1) => request(`/api/users/${encodeURIComponent(userId)}/transactions?page=${page}`);
 const makeClientReference = (prefix) => `${prefix}-${Date.now().toString(36).toUpperCase()}`;
 
 export const depositFunds = (userId, { amount, method, reference }) => request(`/api/admin/games/users/${encodeURIComponent(userId)}/request-deposit`, {

@@ -19,7 +19,11 @@ const elements = {
   depositButton: document.getElementById('depositButton'),
   withdrawButton: document.getElementById('withdrawButton'),
   historyRefresh: document.getElementById('historyRefreshButton'),
+  previousTransactions: document.getElementById('previousTransactionsButton'),
+  nextTransactions: document.getElementById('nextTransactionsButton'),
 };
+
+let transactionPage = 1;
 
 const showNotice = (message) => {
   elements.gamesNotice.textContent = message;
@@ -83,7 +87,8 @@ const runMoneyAction = async (action, input, methodInput, referenceInput, button
   }
 };
 
-const loadApp = async () => {
+const loadApp = async (requestedTransactionPage = transactionPage) => {
+  transactionPage = Math.max(requestedTransactionPage, 1);
   setRefreshing(true);
   elements.gamesNotice.classList.add('hidden');
   elements.gamesGrid.innerHTML = '<div class="loading-state">Loading games...</div>';
@@ -100,7 +105,7 @@ const loadApp = async () => {
       fetchGames(),
       fetchUser(userId),
       fetchBalance(userId),
-      fetchTransactions(userId),
+      fetchTransactions(userId, transactionPage),
     ]);
     const games = Array.isArray(gamesResult.games) ? gamesResult.games : [];
     const user = userResult.user || {};
@@ -108,7 +113,7 @@ const loadApp = async () => {
     elements.gamesCount.textContent = `${games.length} active`;
     renderWallet({ user, balance: balanceResult.balance, telegramId: telegramUser?.id || session.telegramId });
     renderProfile({ user, telegramId: telegramUser?.id || session.telegramId });
-    renderTransactions(transactionsResult.transactions || []);
+    renderTransactions(transactionsResult.transactions || [], transactionsResult.pagination || { page: transactionPage });
   } catch (error) {
     elements.gamesGrid.innerHTML = '<div class="empty-state">We could not load the games.</div>';
     showNotice(error.message || 'Please try again.');
@@ -124,5 +129,7 @@ elements.invite.addEventListener('click', shareInvite);
 elements.depositButton.addEventListener('click', () => runMoneyAction(depositFunds, elements.depositAmount, elements.depositMethod, elements.depositReference, elements.depositButton, 'Deposit request submitted for review.'));
 elements.withdrawButton.addEventListener('click', () => runMoneyAction(withdrawFunds, elements.withdrawAmount, elements.withdrawMethod, elements.withdrawReference, elements.withdrawButton, 'Withdrawal request submitted for review.'));
 elements.historyRefresh.addEventListener('click', () => loadApp());
+elements.previousTransactions.addEventListener('click', () => loadApp(transactionPage - 1));
+elements.nextTransactions.addEventListener('click', () => loadApp(transactionPage + 1));
 initializeTelegram();
 loadApp();

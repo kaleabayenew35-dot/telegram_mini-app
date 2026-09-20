@@ -80,6 +80,10 @@ h2 { font-size: 24px; }
 .status-pending { background: #fff0c9; color: #856317; }
 .status-rejected { background: #ffe2d9; color: #8c301e; }
 .empty-history { padding: 20px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); text-align: center; font-size: 13px; }
+.history-pagination { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 14px; }
+.history-pagination span { min-width: 52px; color: var(--muted); font-size: 12px; text-align: center; }
+.history-pagination .secondary-button { padding: 8px 11px; font-size: 11px; }
+.history-pagination .secondary-button:disabled { opacity: .4; cursor: not-allowed; }
 .account-card { display: grid; gap: 0; margin-top: 14px; padding: 4px 16px; border-radius: 14px; }
 .account-card > div { padding: 14px 0; border-bottom: 1px solid var(--line); }
 .account-card > div:last-child { border-bottom: 0; }

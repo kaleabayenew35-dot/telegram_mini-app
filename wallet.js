@@ -15,8 +15,15 @@ const formatDate = (value) => {
   return Number.isNaN(date.getTime()) ? 'Date unavailable' : date.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
 };
 
-export const renderTransactions = (transactions = []) => {
+export const renderTransactions = (transactions = [], pagination = {}) => {
   const list = document.getElementById('transactionList');
+  const pageLabel = document.getElementById('transactionPageLabel');
+  const previousButton = document.getElementById('previousTransactionsButton');
+  const nextButton = document.getElementById('nextTransactionsButton');
+  pageLabel.textContent = `Page ${pagination.page || 1}`;
+  previousButton.disabled = !pagination.hasPrevious;
+  nextButton.disabled = !pagination.hasNext;
+
   if (!transactions.length) {
     list.innerHTML = '<div class="empty-history">No account transactions yet.</div>';
     return;
@@ -33,6 +40,7 @@ export const renderTransactions = (transactions = []) => {
       <div class="transaction-amount ${isDeposit ? 'deposit-text' : ''}"><strong>${amount}</strong><span class="status status-${status}">${statusLabel}</span></div>
     </article>`;
   }).join('');
+
 };
 
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
