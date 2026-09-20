@@ -136,7 +136,7 @@ const loadApp = async (requestedTransactionPage = transactionPage) => {
       promotionTimer = window.setInterval(() => {
         promotionIndex = (promotionIndex + 1) % promotions.length;
         carousel.activate(promotionIndex);
-      }, 5000);
+      }, 10000);
     }
   } catch (error) {
     elements.gamesGrid.innerHTML = '<div class="empty-state">We could not load the games.</div>';
