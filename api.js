@@ -15,6 +15,18 @@ const request = async (path, options = {}) => {
 };
 
 export const fetchGames = () => request('/api/games');
+export const startGameSession = (gameId, userId) => request(`/api/games/${encodeURIComponent(gameId)}/start`, {
+  method: 'POST',
+  body: JSON.stringify({ user_id: userId }),
+});
+export const fetchLaunchToken = (gameId, { user, balance }) => {
+  const params = new URLSearchParams({
+    phone: user?.phone_number || '',
+    username: user?.username || '',
+    balance: Number(balance?.balance ?? 0).toFixed(2),
+  });
+  return request(`/api/admin/games/game-tokens/launch/${encodeURIComponent(gameId)}?${params}`);
+};
 export const fetchUser = (userId) => request(`/api/users/${encodeURIComponent(userId)}`);
 export const fetchBalance = (userId) => request(`/api/users/${encodeURIComponent(userId)}/balance`);
 export const fetchTransactions = (userId, page = 1) => request(`/api/users/${encodeURIComponent(userId)}/transactions?page=${page}`);

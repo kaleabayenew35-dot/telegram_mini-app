@@ -16,16 +16,13 @@ const cleanUrl = (value) => {
   }
 };
 
-const launchUrl = (game, auth) => {
+const baseGameUrl = (game) => {
   const url = cleanUrl(game.mini_app_url) || cleanUrl(game.game_url);
   if (!url) return null;
-  const parsed = new URL(url);
-  if (auth.token) parsed.searchParams.set('token', auth.token);
-  if (auth.launch) parsed.searchParams.set('launch', auth.launch);
-  return parsed.toString();
+  return new URL(url);
 };
 
-export const renderGames = (container, games, auth, onNotice) => {
+export const renderGames = (container, games, onPlay, onNotice) => {
   container.replaceChildren();
   if (!games.length) {
     container.innerHTML = '<div class="empty-state">No active games are available right now.</div>';
@@ -35,7 +32,7 @@ export const renderGames = (container, games, auth, onNotice) => {
   games.forEach((game) => {
     const card = document.createElement('article');
     card.className = 'game-card';
-    const url = launchUrl(game, auth);
+    const url = baseGameUrl(game);
     const minimum = Number(game.min_players || 1);
     const maximum = Number(game.max_players || minimum);
     card.innerHTML = `
@@ -47,9 +44,21 @@ export const renderGames = (container, games, auth, onNotice) => {
       </div>
       <button class="play-button" type="button" ${url ? '' : 'disabled'}>${url ? 'Play' : 'Soon'}</button>
     `;
-    card.querySelector('.play-button').addEventListener('click', () => {
-      if (url) window.location.assign(url);
-      else onNotice('This game does not have a launch URL yet.');
+    card.querySelector('.play-button').addEventListener('click', async (event) => {
+      if (!url) {
+        onNotice('This game does not have a launch URL yet.');
+        return;
+      }
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = 'Opening...';
+      try {
+        await onPlay(game, url);
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = 'Play';
+        onNotice(error.message || 'Could not open this game.');
+      }
     });
     container.appendChild(card);
   });

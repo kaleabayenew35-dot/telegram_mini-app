@@ -1,5 +1,5 @@
 import { ensureAuth, getAuth, getTelegramContext, initializeTelegram } from './auth.js';
-import { API_BASE, depositFunds, fetchBalance, fetchGames, fetchTransactions, fetchUser, withdrawFunds } from './api.js';
+import { API_BASE, depositFunds, fetchBalance, fetchGames, fetchLaunchToken, fetchTransactions, fetchUser, startGameSession, withdrawFunds } from './api.js';
 import { renderGames } from './games.js';
 import { renderTransactions, renderWallet } from './wallet.js';
 
@@ -58,6 +58,15 @@ const shareInvite = () => {
   else window.open(shareUrl, '_blank', 'noopener,noreferrer');
 };
 
+const openGame = async (game, url, user, balance, session) => {
+  await startGameSession(game.id, session.userId).catch(() => {});
+  const launch = await fetchLaunchToken(game.id, { user, balance });
+  if (!launch.token || !launch.launch) throw new Error('Secure game launch is unavailable right now.');
+  url.searchParams.set('token', launch.token);
+  url.searchParams.set('launch', launch.launch);
+  window.location.assign(url.toString());
+};
+
 const setRefreshing = (isRefreshing) => {
   elements.refresh.classList.toggle('is-refreshing', isRefreshing);
   elements.refresh.disabled = isRefreshing;
@@ -109,7 +118,7 @@ const loadApp = async (requestedTransactionPage = transactionPage) => {
     ]);
     const games = Array.isArray(gamesResult.games) ? gamesResult.games : [];
     const user = userResult.user || {};
-    renderGames(elements.gamesGrid, games, auth, toast);
+    renderGames(elements.gamesGrid, games, (game, url) => openGame(game, url, user, balanceResult.balance, session), toast);
     elements.gamesCount.textContent = `${games.length} active`;
     renderWallet({ user, balance: balanceResult.balance, telegramId: telegramUser?.id || session.telegramId });
     renderProfile({ user, telegramId: telegramUser?.id || session.telegramId });
