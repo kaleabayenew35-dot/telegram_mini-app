@@ -1,6 +1,7 @@
 import { ensureAuth, getAuth, getTelegramContext, initializeTelegram } from './auth.js';
-import { API_BASE, depositFunds, fetchBalance, fetchGames, fetchLaunchToken, fetchTransactions, fetchUser, startGameSession, withdrawFunds } from './api.js';
+import { API_BASE, depositFunds, fetchBalance, fetchGames, fetchLaunchToken, fetchPromotions, fetchTransactions, fetchUser, startGameSession, withdrawFunds } from './api.js';
 import { renderGames } from './games.js';
+import { renderPromotions } from './promotions.js';
 import { renderTransactions, renderWallet } from './wallet.js';
 
 const elements = {
@@ -21,9 +22,12 @@ const elements = {
   historyRefresh: document.getElementById('historyRefreshButton'),
   previousTransactions: document.getElementById('previousTransactionsButton'),
   nextTransactions: document.getElementById('nextTransactionsButton'),
+  promotionTrack: document.getElementById('promotionTrack'),
+  promotionControls: document.getElementById('promotionControls'),
 };
 
 let transactionPage = 1;
+let promotionTimer = null;
 
 const showNotice = (message) => {
   elements.gamesNotice.textContent = message;
@@ -110,11 +114,12 @@ const loadApp = async (requestedTransactionPage = transactionPage) => {
 
     if (!userId) throw new Error('Your account session is incomplete. Please reopen the Mini App from Telegram.');
 
-    const [gamesResult, userResult, balanceResult, transactionsResult] = await Promise.all([
+    const [gamesResult, userResult, balanceResult, transactionsResult, promotionsResult] = await Promise.all([
       fetchGames(),
       fetchUser(userId),
       fetchBalance(userId),
       fetchTransactions(userId, transactionPage),
+      fetchPromotions(),
     ]);
     const games = Array.isArray(gamesResult.games) ? gamesResult.games : [];
     const user = userResult.user || {};
@@ -123,6 +128,16 @@ const loadApp = async (requestedTransactionPage = transactionPage) => {
     renderWallet({ user, balance: balanceResult.balance, telegramId: telegramUser?.id || session.telegramId });
     renderProfile({ user, telegramId: telegramUser?.id || session.telegramId });
     renderTransactions(transactionsResult.transactions || [], transactionsResult.pagination || { page: transactionPage });
+    const promotions = Array.isArray(promotionsResult.promotions) ? promotionsResult.promotions : [];
+    const carousel = renderPromotions(elements.promotionTrack, elements.promotionControls, promotions, showNotice);
+    if (promotionTimer) window.clearInterval(promotionTimer);
+    if (promotions.length > 1) {
+      let promotionIndex = 0;
+      promotionTimer = window.setInterval(() => {
+        promotionIndex = (promotionIndex + 1) % promotions.length;
+        carousel.activate(promotionIndex);
+      }, 5000);
+    }
   } catch (error) {
     elements.gamesGrid.innerHTML = '<div class="empty-state">We could not load the games.</div>';
     showNotice(error.message || 'Please try again.');

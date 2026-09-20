@@ -15,6 +15,12 @@ const request = async (path, options = {}) => {
 };
 
 export const fetchGames = () => request('/api/games');
+export const fetchPromotions = async () => {
+  const response = await fetch(`${API_BASE}/api/promotions`, { cache: 'no-store' });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || 'Could not load promotions');
+  return payload;
+};
 export const startGameSession = (gameId, userId) => request(`/api/games/${encodeURIComponent(gameId)}/start`, {
   method: 'POST',
   body: JSON.stringify({ user_id: userId }),
