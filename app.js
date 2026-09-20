@@ -72,8 +72,8 @@ const openGame = async (game, url, user, balance, session) => {
 };
 
 const setRefreshing = (isRefreshing) => {
-  elements.refresh.classList.toggle('is-refreshing', isRefreshing);
-  elements.refresh.disabled = isRefreshing;
+  elements.refresh?.classList.toggle('is-refreshing', isRefreshing);
+  if (elements.refresh) elements.refresh.disabled = isRefreshing;
 };
 
 const readAmount = (input) => {
@@ -148,7 +148,7 @@ const loadApp = async (requestedTransactionPage = transactionPage) => {
 };
 
 document.querySelectorAll('.view-tab').forEach((tab) => tab.addEventListener('click', () => setView(tab.dataset.view)));
-elements.refresh.addEventListener('click', () => loadApp());
+elements.refresh?.addEventListener('click', () => loadApp());
 elements.invite.addEventListener('click', shareInvite);
 elements.depositButton.addEventListener('click', () => runMoneyAction(depositFunds, elements.depositAmount, elements.depositMethod, elements.depositReference, elements.depositButton, 'Deposit request submitted for review.'));
 elements.withdrawButton.addEventListener('click', () => runMoneyAction(withdrawFunds, elements.withdrawAmount, elements.withdrawMethod, elements.withdrawReference, elements.withdrawButton, 'Withdrawal request submitted for review.'));
